@@ -15,19 +15,21 @@ def parse_leads_batch(html_content: str, source_url: str) -> list[CompanyLead]:
     soup = BeautifulSoup(html_content, "html.parser")
     validated_leads = []
 
-    title_tag = soup.find("h1")
-    paragraph_tag = soup.find("p")
+    paragraphs = soup.find_all("p")
 
-    if title_tag:
-        lead = CompanyLead(
-            name=title_tag.get_text().strip(),
-            website=source_url,
-            industry="Literature",
-            description=paragraph_tag.get_text().strip() if paragraph_tag else None,
-        )
-        validated_leads.append(lead)
 
-    return validated_leads
+    for idx, p in enumerate(paragraphs, start=1):
+        text_content = p.get_text().strip()
+        if text_content:
+            lead = CompanyLead(
+                name=f"Company Lead #{idx}",
+                website=source_url,
+                industry="Tech Services",
+                description=text_content,
+            )
+            validated_leads.append(lead)
+
+        return validated_leads
 
 
 async def send_to_webhook(webhook_url: str, payload: list[dict]) -> None:
