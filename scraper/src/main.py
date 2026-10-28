@@ -42,11 +42,13 @@ async def send_to_webhook(webhook_url: str, payload: list[dict]) -> None:
 
 async def main():
     target_url = "https://httpbin.org/html"
-    webhook_test_url = "https://httpbin.org/post"
+    
+    webhook_test_url = "http://host.docker.internal:5678/webhook-test/b2b-leads-ingestion"
 
     print(f"Starting batch extraction from: {target_url}...\n")
 
     try:
+      
         html_content = await fetch_html(target_url)
 
         leads_objects = parse_leads_batch(html_content, target_url)

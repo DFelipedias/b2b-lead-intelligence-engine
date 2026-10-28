@@ -1,0 +1,186 @@
+{
+  "name": "b2b-lead-enrichment-pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b2b-leads-ingestion",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9b6af658-9f06-434b-b238-182e55530885",
+      "name": "Webhook",
+      "webhookId": "8bd29809-e2a0-4eed-bbfc-68b3b1885d33"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d36186ba-ba9f-49c0-a0c1-803b83b9278b",
+              "name": "name",
+              "value": "={{ $json.body[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "17fe6122-1ce6-4028-a523-23daff795e85",
+              "name": "website",
+              "value": "={{ $json.body[0].website }}",
+              "type": "string"
+            },
+            {
+              "id": "bb900c55-18f1-424a-95e1-a87be0c47453",
+              "name": "industry",
+              "value": "={{ $json.body[0].industry }}",
+              "type": "string"
+            },
+            {
+              "id": "13b46902-84d8-44d1-9ced-92fade33cdb7",
+              "name": "description",
+              "value": "={{ $json.body[0].description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "7be4e5ef-6f83-4780-9bc7-bb623ba48d7b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "domain",
+              "value": "={{ $('Edit Fields').first().json.website }}"
+            },
+            {
+              "name": "target_role",
+              "value": "CEO / Founder"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "a17417f0-90a0-4260-b9d3-37af101ea748",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a45fe569-5e24-4b92-9012-0e9e5e4cde49",
+              "name": "company_name",
+              "value": "=={{ $('Edit Fields').first().json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "860da1b0-0e6f-4d23-8352-753a8b068127",
+              "name": "company_website",
+              "value": "=={{ $('Edit Fields').first().json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "8b58ebfb-c3b2-4dfb-aeed-9be6c86b43e2",
+              "name": "company_industry",
+              "value": "=={{ $('Edit Fields').first().json.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "6fb927c6-90ea-4f88-bafc-eacc3d19e0bf",
+              "name": "target_role",
+              "value": "=={{ $json.json.target_role }}",
+              "type": "string"
+            },
+            {
+              "id": "a0c6e51c-9ab7-4602-ab17-0e491f37f905",
+              "name": "contact_email",
+              "value": "=\"contact@\" + {{ $('Edit Fields').first().json.website }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "d128cd5b-6a6f-434b-8a9c-c4a7cc58fe03",
+      "name": "Format STG Lead"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Format STG Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "935ea56f-ec07-47f0-ad8d-7ce7a03027ed",
+  "meta": {
+    "instanceId": "fb38624868bc74181efd64deb092eda992fe06ca401b51684b63feefd58b3936"
+  },
+  "nodeGroups": [],
+  "id": "8n0tmEM0XXyicypr",
+  "tags": []
+}
