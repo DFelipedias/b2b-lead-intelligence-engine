@@ -133,6 +133,46 @@
       ],
       "id": "d128cd5b-6a6f-434b-8a9c-c4a7cc58fe03",
       "name": "Format STG Lead"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/api/v1/load-lead",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=company_name",
+              "value": "={{ $json.company_name }}"
+            },
+            {
+              "name": "company_website",
+              "value": "={{ $json.company_website }}"
+            },
+            {
+              "name": "company_industry",
+              "value": "={{ $json.company_industry }}"
+            },
+            {
+              "name": "target_role",
+              "value": "={{ $json.target_role }}"
+            },
+            {
+              "name": "contact_email",
+              "value": "={{ $json.contact_email }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        896,
+        0
+      ],
+      "id": "4acbf2d9-fade-4bcf-bfaf-0edc05a9ad25",
+      "name": "HTTP Request1"
     }
   ],
   "pinData": {},
@@ -169,6 +209,17 @@
           }
         ]
       ]
+    },
+    "Format STG Lead": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -176,8 +227,9 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "935ea56f-ec07-47f0-ad8d-7ce7a03027ed",
+  "versionId": "a2ca1142-b43c-4c6b-ac65-ba990008f4f9",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "fb38624868bc74181efd64deb092eda992fe06ca401b51684b63feefd58b3936"
   },
   "nodeGroups": [],
