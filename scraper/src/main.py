@@ -15,21 +15,32 @@ def parse_leads_batch(html_content: str, source_url: str) -> list[CompanyLead]:
     soup = BeautifulSoup(html_content, "html.parser")
     validated_leads = []
 
-    paragraphs = soup.find_all("p")
+    cards = soup.find_all("article", class_="company-card")
+    for card in cards:
+    
+        title_elem = card.find("h2", class_="company-title")
+        link_elem = card.find("a", class_="website-link")
+        industry_elem = card.find("span", class_="industry-badge")
+        desc_elem = card.find("p", class_="description")
+        
+        company_name = title_elem.get_text(strip=True) if title_elem else None
+        website = link_elem.get("href") if link_elem else None
+        industry = industry_elem.get_text(strip=True) if industry_elem else "General Tech"
+        description = desc_elem.get_text(strip=True) if desc_elem else None
+        
+        if company_name and website:
+            try:
+                lead = CompanyLead(
+                    name=company_name,
+                    website=website,
+                    industry=industry,
+                    description=description,
+                )
+                validated_leads.append(lead)
+            except Exception as e:
+                print(f"Error to validate lead {company_name}: {e}")
 
-
-    for idx, p in enumerate(paragraphs, start=1):
-        text_content = p.get_text().strip()
-        if text_content:
-            lead = CompanyLead(
-                name=f"Company Lead #{idx}",
-                website=source_url,
-                industry="Tech Services",
-                description=text_content,
-            )
-            validated_leads.append(lead)
-
-        return validated_leads
+    return validated_leads
 
 
 async def send_to_webhook(webhook_url: str, payload: list[dict]) -> None:
