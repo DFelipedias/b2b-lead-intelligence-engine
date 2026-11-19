@@ -1,6 +1,7 @@
 import asyncio
 import httpx
 from bs4 import BeautifulSoup
+from pathlib import Path
 from models import CompanyLead
 
 
@@ -52,25 +53,29 @@ async def send_to_webhook(webhook_url: str, payload: list[dict]) -> None:
 
 
 async def main():
-    target_url = "https://httpbin.org/html"
-    
+    catalog_path = Path(__file__).parent / "b2b_catalog.html"
     webhook_test_url = "http://host.docker.internal:5678/webhook-test/b2b-leads-ingestion"
 
-    print(f"Starting batch extraction from: {target_url}...\n")
+    print(f"Starting batch extraction from local catalog: {catalog_path.name}...\n")
 
     try:
-      
-        html_content = await fetch_html(target_url)
+        html_content = catalog_path.read_text(encoding="utf-8")
 
-        leads_objects = parse_leads_batch(html_content, target_url)
+        leads_objects = parse_leads_batch(html_content, source_url="https://directory.internal/b2b")
 
         payload_batch = [lead.model_dump() for lead in leads_objects]
+
+        print(f"Extracted {len(payload_batch)} valid lead(s):")
+        for lead in payload_batch:
+            print(f" -> {lead['name']} ({lead['website']}) - Industry: {lead['industry']}")
 
         if payload_batch:
             await send_to_webhook(webhook_test_url, payload_batch)
 
     except httpx.HTTPError as exc:
         print(f"HTTP error occurred during execution: {exc}")
+    except Exception as exc:
+        print(f"Unexpected error: {exc}")
 
 if __name__ == "__main__":
     asyncio.run(main())
