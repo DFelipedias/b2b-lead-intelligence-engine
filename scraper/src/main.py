@@ -28,7 +28,8 @@ def parse_leads_batch(html_content: str, source_url: str) -> list[CompanyLead]:
         website = link_elem.get("href") if link_elem else None
         industry = industry_elem.get_text(strip=True) if industry_elem else "General Tech"
         description = desc_elem.get_text(strip=True) if desc_elem else None
-        
+        description = description or None
+
         if company_name and website:
             try:
                 lead = CompanyLead(

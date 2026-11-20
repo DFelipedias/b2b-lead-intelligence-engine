@@ -1,0 +1,10 @@
+gcp_key.json
+.env
+
+__pycache__/
+*.py[cod]
+
+.pytest_cache/
+.coverage
+
+.agents/
