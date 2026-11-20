@@ -165,5 +165,5 @@ b2b-lead-intelligence-engine/
 ## 👨‍💻 Author
 
 Developed by **Felipe Dias**  
-*DData Engineer | End-to-End Data Solutions*  
+*Data Engineer | End-to-End Data Solutions*  
 [GitHub Profile](https://github.com/DFelipedias)
