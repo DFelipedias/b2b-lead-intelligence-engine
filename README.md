@@ -19,12 +19,11 @@ Engineered to solve stale B2B company databases by asynchronously scraping web d
 ```mermaid
 flowchart LR
     A["Target B2B Directory"] -->|Async HTTP / BS4| B["Scraper Engine (Python 3.11 / Docker)"]
-    B -->|Pydantic v2 Schema Contract| B
     B -->|HTTP POST Batch Payload| C["n8n Orchestration Engine"]
     C -->|Split Out Items| D["Contact & Role Enrichment"]
     D -->|POST /api/v1/load-lead| E["FastAPI Ingestion Microservice"]
-    E -->|BigQuery Load Job (NDJSON)| F[("BigQuery DW: stg_b2b_leads")]
-    F -->|SQL Dimensional Modeling| G[("Star Schema Views (Kimball)")]
+    E -->|BigQuery Load Job - NDJSON| F[("BigQuery DW: stg_b2b_leads")]
+    F -->|SQL Dimensional Modeling| G[("Star Schema Views - Kimball")]
     G --> H["Looker Studio BI Dashboard"]
 ```
 
@@ -166,5 +165,5 @@ b2b-lead-intelligence-engine/
 ## 👨‍💻 Author
 
 Developed by **Felipe Dias**  
-*Analytics Engineering & Data Solutions*  
+*DData Engineer | End-to-End Data Solutions*  
 [GitHub Profile](https://github.com/DFelipedias)
